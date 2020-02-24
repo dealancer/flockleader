@@ -5,11 +5,11 @@ class FlockLeader {
     this.worker = cp.fork("./worker.js");
     this.promiseMap = new Map();
 
-    this.worker.on('message', ({ id, status, result, reason }) => {
+    this.worker.on('message', ({ command, id, result, reason }) => {
       const promise = this.promiseMap.get(id);
-      if (status == 'done') {
+      if (command == 'done') {
           promise.resolve(result);
-      } else if (status == 'error') {
+      } else if (command == 'error') {
           promise.reject(reason);
       }
     });
@@ -20,7 +20,7 @@ class FlockLeader {
     const promise = new Promise((resolve, reject) => {
       this.promiseMap.set(id, { resolve: resolve, reject: reject })
     });
-    this.worker.send({ id, func: func.toString(), args });
+    this.worker.send({ command: "run", id: id, func: func.toString(), args: args });
     return promise;
   }
 }

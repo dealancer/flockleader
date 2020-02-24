@@ -1,8 +1,10 @@
-process.on('message', ({ id, func, args  }) => {
-  eval("func = " + func); 
-  func(...args).then(result => {
-    process.send({ id: id, status: 'done', result: result });
-  }).catch(reason => {
-    process.send({ id: id, status: 'error', reason: reason });
- });
+process.on('message', ({ command, id, func, args  }) => {
+  if (command == 'run') {
+    eval("func = " + func); 
+    func(...args).then(result => {
+      process.send({ command: 'done', id: id, result: result });
+    }).catch(reason => {
+      process.send({ command: 'error', id: id, reason: reason });
+    });
+  }
 });
