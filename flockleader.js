@@ -1,35 +1,46 @@
 const cp = require('child_process');
 
 class FlockLeader {
-  constructor() {
-    this.worker = cp.fork("./worker.js");
+  constructor(workerCount) {
+    this.workerCount = workerCount ? workerCount : 1;
+    this.workerPool = new Array();
     this.promiseMap = new Map();
 
-    this.worker.on('message', ({ command, id, func, args, result, reason }) => {
+    var onMessage = ({ command, workerId, funcId, func, args, result, reason }) => {
       if (command == 'done') {
-        const promise = this.promiseMap.get(id);
-        promise.resolve({ id: id, result: result });
+        const promise = this.promiseMap.get(funcId);
+        promise.resolve({ funcId: funcId, result: result });
       } else if (command == 'error') {
-        const promise = this.promiseMap.get(id);
-        promise.reject({ id: id, reason: reason });
+        const promise = this.promiseMap.get(funcId);
+        promise.reject({ funcId: funcId, reason: reason });
       } else if (command == 'run') {
-        this.runLogic({ id: id, func: func, args: args }).then(
-          ({ id, result }) => this.worker.send({ command: 'done', id: id, result: result })
+        this.runLogic({ funcId: funcId, func: func, args: args }).then(
+          ({ funcId, result }) => this.workerPool[workerId].send({ command: 'done', funcId: funcId, result: result })
         ).catch(
-          ({ id, reason }) => this.worker.send({ command: 'error', id: id, reason: reason })
+          ({ funcId, reason }) => this.workerPool[workerId].send({ command: 'error', funcId: funcId, reason: reason })
         );
       }
-    });
+    }
+
+    for (let i = 0; i < this.workerCount; i++) {
+      let worker = cp.fork("./worker.js");
+      let onMessageWrapper = (args) => {
+        return onMessage({ ...args, ...{ workerId: i } });
+      };
+      worker.on('message',  onMessageWrapper);
+      this.workerPool.push(worker);
+    }
   }
 
-  runLogic = function({ id, func, args }) {
-    if (!id) {
-      id = Math.floor(Math.random() * 1000);
+  runLogic = function({ funcId, func, args }) {
+    if (!funcId) {
+      funcId = Math.floor(Math.random() * 1000);
     }
     const promise = new Promise((resolve, reject) => {
-      this.promiseMap.set(id, { resolve: resolve, reject: reject })
+      this.promiseMap.set(funcId, { resolve: resolve, reject: reject })
     });
-    this.worker.send({ command: 'run', id: id, func: func.toString(), args: args });
+    var workerId = Math.floor(Math.random() * this.workerCount);
+    this.workerPool[workerId].send({ command: 'run', funcId: funcId, func: func.toString(), args: args });
     return promise;
   }
 

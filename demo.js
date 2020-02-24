@@ -1,6 +1,6 @@
 const FlockLeader = require('./flockleader.js');
 
-const fl = new FlockLeader();
+const fl = new FlockLeader(10);
 
 const mergeSort = async function(arr) {
   if (arr.length < 2) {
@@ -38,6 +38,11 @@ const mergeSort = async function(arr) {
 const arr = [9, 2, 4, 1, 0, -2, 4, 1, 4, 2, 8, 4];
 
 // TODO: figure out why no error messages are shown if there are error in mergeSort func.
+// TODO: figure out where to use var or let variables
+// TODO: add comments
+// TODO: generate proper ids
+// TODO: debug
+// TODO: stop processes
 fl.run(mergeSort, [arr]).then(
   result => console.log(result)
 ).catch(
