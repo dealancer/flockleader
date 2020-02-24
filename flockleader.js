@@ -44,4 +44,4 @@ class FlockLeader {
   }
 }
 
-module.exports = new FlockLeader();
+module.exports = FlockLeader;

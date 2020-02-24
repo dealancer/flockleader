@@ -1,4 +1,6 @@
-const fl = require('./flockleader.js');
+const FlockLeader = require('./flockleader.js');
+
+const fl = new FlockLeader();
 
 const mergeSort = async function(arr) {
   if (arr.length < 2) {
