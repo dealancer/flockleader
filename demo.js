@@ -5,7 +5,7 @@ const mergeSort = async function(arr) {
     return arr;
   }
 
-  var [a, b] = await Promise.all([
+  let [a, b] = await Promise.all([
     run(
       arr.slice(0, Math.floor(arr.length / 2))
     ),
@@ -14,8 +14,8 @@ const mergeSort = async function(arr) {
     )
   ]);
 
-  var resArr = [];
-  var i = 0, j = 0;
+  let resArr = [];
+  let i = 0, j = 0;
   while (true) {
     if ( i < a.length && j < b.length) {
       if (a[i] < b[j]) {
@@ -37,14 +37,15 @@ const mergeSort = async function(arr) {
   return resArr;
 }
 
-const arr = new Array();
+let arr = new Array();
 for (let i = 0; i < 10; i++) {
   arr.push(Math.floor(Math.random() * 1000000000) - 500000000);
 }
 
 // TODO: add comments
 // TODO: debug
-var fl = new FlockLeader(10);
+
+const fl = new FlockLeader(10);
 fl.run(mergeSort, arr).then(
   result => console.log(result)
 ).catch(
