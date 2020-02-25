@@ -1,6 +1,8 @@
+var crypto = require("crypto");
+
 class Util {
   static createId() {
-    return Math.floor(Math.random() * 1000);
+    return crypto.randomBytes(32).toString('hex');
   }
 }
 
