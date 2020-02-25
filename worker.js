@@ -1,3 +1,5 @@
+const util = require('./util.js');
+
 const promiseMap = new Map();
 
 process.on('message', ({ command, funcId, func, args, result, reason }) => {
@@ -11,7 +13,7 @@ process.on('message', ({ command, funcId, func, args, result, reason }) => {
     var funcStr = func;
     eval("func = " + func);
     const run = function(...args) {
-      const newFuncId = Math.floor(Math.random() * 1000000);
+      const newFuncId = util.createId();
       const promise = new Promise((resolve, reject) => {
         promiseMap.set(newFuncId, { resolve: resolve, reject: reject })
       });

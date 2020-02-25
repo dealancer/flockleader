@@ -1,4 +1,5 @@
 const cp = require('child_process');
+const util = require('./util.js');
 
 class FlockLeader {
   constructor(workerCount) {
@@ -14,10 +15,14 @@ class FlockLeader {
         const promise = this.promiseMap.get(funcId);
         promise.reject({ funcId: funcId, reason: reason });
       } else if (command == 'run') {
-        this.runLogic({ funcId: funcId, func: func, args: args }).then(
-          ({ funcId, result }) => this.workerPool[workerId].send({ command: 'done', funcId: funcId, result: result })
+        this.runFunc({ funcId: funcId, func: func, args: args }).then(
+          ({ funcId, result }) => {
+            this.workerPool[workerId].send({ command: 'done', funcId: funcId, result: result })
+          }
         ).catch(
-          ({ funcId, reason }) => this.workerPool[workerId].send({ command: 'error', funcId: funcId, reason: reason })
+          ({ funcId, reason }) => {
+            this.workerPool[workerId].send({ command: 'error', funcId: funcId, reason: reason })
+          }
         );
       }
     }
@@ -32,21 +37,23 @@ class FlockLeader {
     }
   }
 
-  runLogic = function({ funcId, func, args }) {
+  runFunc = function({ funcId, func, args }) {
     if (!funcId) {
-      funcId = Math.floor(Math.random() * 1000);
+      funcId = util.createId();
     }
     const promise = new Promise((resolve, reject) => {
       this.promiseMap.set(funcId, { resolve: resolve, reject: reject })
     });
     var workerId = Math.floor(Math.random() * this.workerCount);
-    this.workerPool[workerId].send({ command: 'run', funcId: funcId, func: func.toString(), args: args });
+    this.workerPool[workerId].send(
+      { command: 'run', funcId: funcId, func: func.toString(), args: args }
+    );
     return promise;
   }
 
   run = function(func, args) {
     return new Promise((resolve, reject) => {
-      this.runLogic({ func: func, args: args }).then(
+      this.runFunc({ func: func, args: args }).then(
         ({ result }) => resolve(result)
       ).catch(
         ({ reason }) => reject(reason)
