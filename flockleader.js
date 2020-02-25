@@ -50,6 +50,10 @@ class FlockLeader {
       );
     });
   }
+
+  done = function() {
+    this.workerPool.map(worker => worker.kill());
+  }
 }
 
 module.exports = FlockLeader;
