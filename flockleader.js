@@ -16,7 +16,7 @@ class FlockLeader {
         this.runFunc({ funcId: funcId, func: func, args: args }).then(({ funcId, result }) => {
             this.workerPool[workerId].send({ command: 'done', funcId: funcId, result: result })
         }).catch(({ funcId, reason }) => {
-          this.workerPool[workerId].send({ command: 'error', funcId: funcId, reason: reason })
+          this.workerPool[workerId].send({ command: 'error', funcId: funcId, reason: reason.toString() })
         });
       }
     }

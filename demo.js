@@ -36,11 +36,10 @@ const mergeSort = async function(arr) {
 }
 
 const arr = new Array();
-for (let i = 0; i < 100000; i++) {
+for (let i = 0; i < 10; i++) {
   arr.push(Math.floor(Math.random() * 1000000000) - 500000000);
 }
 
-// TODO: figure out why no error messages are shown if there are error in mergeSort func.
 // TODO: add comments
 // TODO: debug
 // TODO: stop processes

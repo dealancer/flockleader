@@ -21,7 +21,7 @@ process.on('message', ({ command, funcId, func, args, result, reason }) => {
     func(...args).then(result => {
       process.send({ command: 'done', funcId: funcId, result: result });
     }).catch(reason => {
-      process.send({ command: 'error', funcId: funcId, reason: reason });
+      process.send({ command: 'error', funcId: funcId, reason: reason.toString() });
     });
   }
 });
