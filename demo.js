@@ -40,8 +40,8 @@ for (let i = 0; i < 10; i++) {
 
 // TODO: add comments
 // TODO: debug
-const fl = new FlockLeader(10);
-fl.run(mergeSort, [arr]).then(
+var fl = new FlockLeader(10);
+fl.run(mergeSort, arr).then(
   result => console.log(result)
 ).catch(
   reason => console.error(reason)

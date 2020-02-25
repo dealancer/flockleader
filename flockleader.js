@@ -41,7 +41,7 @@ class FlockLeader {
     return promise;
   }
 
-  run = function(func, args) {
+  run = function(func, ...args) {
     return new Promise((resolve, reject) => {
       this.runFunc({ func: func, args: args }).then(
         ({ result }) => resolve(result)
