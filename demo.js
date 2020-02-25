@@ -6,8 +6,12 @@ const mergeSort = async function(arr) {
   }
 
   var [a, b] = await Promise.all([
-    run(arr.slice(0, Math.floor(arr.length / 2))).catch(reason => console.log(reason)),
-    run(arr.slice(Math.floor(arr.length / 2), arr.length)).catch(reason => console.log(reason)),
+    run(
+      arr.slice(0, Math.floor(arr.length / 2))
+    ),
+    run(
+      arr.slice(Math.floor(arr.length / 2), arr.length)
+    )
   ]);
 
   var resArr = [];
@@ -22,10 +26,10 @@ const mergeSort = async function(arr) {
         j++;
       }
     } else if (i < a.length) {
-      resArr.push(...a.slice(i, a.length))
+      resArr.push(...a.slice(i, a.length));
       break;
     } else if (j < b.length) {
-      resArr.push(...b.slice(j, b.length))
+      resArr.push(...b.slice(j, b.length));
       break;
     }
   }
