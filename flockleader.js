@@ -22,7 +22,7 @@ class FlockLeader {
     }
 
     for (let i = 0; i < this.workerCount; i++) {
-      let worker = cp.fork("./worker.js");
+      let worker = cp.fork(__dirname + "/worker.js");
       let onMessageWrapper = (args) => {
         return onMessage({ ...args, ...{ workerId: i } });
       };

@@ -1,4 +1,4 @@
-const FlockLeader = require('./flockleader.js');
+const FlockLeader = require('../flockleader.js');
 
 const mergeSort = async function(arr) {
   if (arr.length < 2) {
@@ -38,14 +38,11 @@ const mergeSort = async function(arr) {
 }
 
 let arr = new Array();
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 50000; i++) {
   arr.push(Math.floor(Math.random() * 1000000000) - 500000000);
 }
 
-// TODO: add comments
-// TODO: debug
-
-const fl = new FlockLeader(10);
+const fl = new FlockLeader(5);
 fl.run(mergeSort, arr).then(
   result => console.log(result)
 ).catch(

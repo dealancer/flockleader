@@ -1,16 +1,15 @@
 {
   "name": "flockleader",
   "version": "0.0.1",
-  "description": "Runs tasks in multiple threads.",
+  "description": "Parallel task runner for Node.js.",
   "main": "flockleader.js",
   "scripts": {
-    "demo": "node demo.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dealancer/flockleader.git"
   },
-  "author": "dealancer <dealancer@gmail.com>",
+  "author": "Vadym Myrgorod <dealancer@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/dealancer/flockleader/issues"
