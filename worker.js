@@ -1,7 +1,8 @@
 const util = require('./util.js');
 const promiseMap = new Map();
 
-const globals = {};
+var settings = {};
+var globals = {};
 
 process.on('message', ({ command, funcId, func, args, result, reason }) => {
   if (command == 'done') {
@@ -19,6 +20,21 @@ process.on('message', ({ command, funcId, func, args, result, reason }) => {
       process.send({ command: 'run', funcId: newFuncId, func: func.toString(), args: args });
       return promise;
     };
+
+    let runMultiple = async function(...allArgs) {
+      var results = new Array();
+
+      for (let i = 0; i < allArgs.length; i = i + settings.maxRecursiveCallCount) {
+        let calls = allArgs.slice(
+          i, Math.min(i + settings.maxRecursiveCallCount, allArgs.length)
+        ).map(
+          args => run(args)
+        );
+        results.push(...await Promise.all(calls));
+      }
+
+      return results;
+    }
 
     let terminate = function(result) {
       process.send({ command: 'terminate', result: result });

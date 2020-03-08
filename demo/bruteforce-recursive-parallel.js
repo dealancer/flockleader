@@ -23,15 +23,15 @@ const bruteforce = async function(p) {
     return;
   }
 
-  let calls = new Array();
+  let args = new Array();
   for (let i = 0; i < globals.alphabet.length; i++) {
-    calls.push(run(p + globals.alphabet[i]));
+    args.push(p + globals.alphabet[i]);
   }
-  await Promise.all(calls);
+
+  await runMultiple(...args);
 }
 
-
-const fl = new FlockLeader(12);
+const fl = new FlockLeader(5, 2);
 fl.init(init).then().catch(
   reason => console.error(reason)
 );

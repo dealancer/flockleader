@@ -2,18 +2,29 @@ const cp = require('child_process');
 const util = require('./util.js');
 
 class FlockLeader {
-  constructor(workerCount) {
+  constructor(workerCount, maxRecursiveCallCount) {
     this.workerCount = workerCount ? workerCount : 1;
+    this.maxRecursiveCallCount = maxRecursiveCallCount ? maxRecursiveCallCount : 1;
+
     this.workerPool = new Array();
     this.promiseMap = new Map();
 
     let onMessage = ({ command, workerId, funcId, func, args, result, reason }) => {
       if (command == 'terminate') {
-        this.promiseMap.get(this.firstFuncId).resolve({ funcId: funcId, result: result });
+        if (this.promiseMap.has(this.firstFuncId)) {
+          this.promiseMap.get(this.firstFuncId).resolve({ funcId: funcId, result: result });
+          this.promiseMap.delete(this.firstFuncId);
+        }
       } else if (command == 'done') {
-        this.promiseMap.get(funcId).resolve({ funcId: funcId, result: result });
+        if (this.promiseMap.has(funcId)) {
+          this.promiseMap.get(funcId).resolve({ funcId: funcId, result: result });
+          this.promiseMap.delete(funcId);
+        }
       } else if (command == 'error') {
-        this.promiseMap.get(funcId).reject({ funcId: funcId, reason: reason });
+        if (this.promiseMap.has(funcId)) {
+          this.promiseMap.get(funcId).reject({ funcId: funcId, reason: reason });
+          this.promiseMap.delete(funcId);
+        }
       } else if (command == 'run') {
         this.runFunc({ funcId: funcId, func: func, args: args }).then(({ funcId, result }) => {
             this.workerPool[workerId].send({ command: 'done', funcId: funcId, result: result })
@@ -31,6 +42,10 @@ class FlockLeader {
       worker.on('message',  onMessageWrapper);
       this.workerPool.push(worker);
     }
+
+    this.init(async s => settings = s, {
+      maxRecursiveCallCount: this.maxRecursiveCallCount
+    }).then();
   }
 
   runFunc = function({ funcId, func, args, init }) {
