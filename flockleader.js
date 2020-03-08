@@ -8,7 +8,9 @@ class FlockLeader {
     this.promiseMap = new Map();
 
     let onMessage = ({ command, workerId, funcId, func, args, result, reason }) => {
-      if (command == 'done') {
+      if (command == 'terminate') {
+        this.promiseMap.get(this.firstFuncId).resolve({ funcId: funcId, result: result });
+      } else if (command == 'done') {
         this.promiseMap.get(funcId).resolve({ funcId: funcId, result: result });
       } else if (command == 'error') {
         this.promiseMap.get(funcId).reject({ funcId: funcId, reason: reason });
@@ -32,7 +34,10 @@ class FlockLeader {
   }
 
   runFunc = function({ funcId, func, args, init }) {
-    funcId = funcId ? funcId : util.createId();
+    if (!funcId) {
+      funcId = util.createId();
+      this.firstFuncId = funcId;
+    }
     let promise = new Promise((resolve, reject) => {
       this.promiseMap.set(funcId, { resolve: resolve, reject: reject })
     });

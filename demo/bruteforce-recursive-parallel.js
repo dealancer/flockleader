@@ -3,7 +3,7 @@ const FlockLeader = require('../flockleader.js');
 const init = async function() {
   const sha256 = require('js-sha256').sha256;
 
-  const password = "999";
+  const password = "Sup";
   const passwordHashed = sha256(password);
 
   globals.maxLen = 3;
@@ -16,29 +16,22 @@ const init = async function() {
 
 const bruteforce = async function(p) {
   if (globals.testPassword(p)) {
-    return [true, p];
+    terminate(p);
   }
 
   if (p.length >= globals.maxLen) {
-    return [false, null];
+    return;
   }
 
   let calls = new Array();
   for (let i = 0; i < globals.alphabet.length; i++) {
     calls.push(run(p + globals.alphabet[i]));
   }
-  let results = await Promise.all(calls);
-  for (let i = 0; i < globals.alphabet.length; i++) {
-    if (results[i][0]) {
-      return results[i];
-    }
-  }
-
-  return [false, null]
+  await Promise.all(calls);
 }
 
 
-const fl = new FlockLeader(10);
+const fl = new FlockLeader(12);
 fl.init(init).then().catch(
   reason => console.error(reason)
 );

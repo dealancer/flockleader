@@ -19,6 +19,10 @@ process.on('message', ({ command, funcId, func, args, result, reason }) => {
       process.send({ command: 'run', funcId: newFuncId, func: func.toString(), args: args });
       return promise;
     };
+
+    let terminate = function(result) {
+      process.send({ command: 'terminate', result: result });
+    }
   
     func(...args).then(result => {
       process.send({ command: 'done', funcId: funcId, result: result });

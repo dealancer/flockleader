@@ -1,6 +1,6 @@
 const sha256 = require('js-sha256').sha256;
 
-const password = "999";
+const password = "Sup";
 const passwordHashed = sha256(password);
 
 const maxLen = 3;
@@ -30,7 +30,7 @@ const bruteforce = async function(p) {
 }
 
 bruteforce("").then(
-  result => console.log(result)
+  result => console.log(result[0])
 ).catch(
   reason => console.error(reason)
 )
