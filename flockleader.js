@@ -31,19 +31,35 @@ class FlockLeader {
     }
   }
 
-  runFunc = function({ funcId, func, args }) {
+  runFunc = function({ funcId, func, args, init }) {
     funcId = funcId ? funcId : util.createId();
     let promise = new Promise((resolve, reject) => {
       this.promiseMap.set(funcId, { resolve: resolve, reject: reject })
     });
-    let workerId = Math.floor(Math.random() * this.workerCount);
-    this.workerPool[workerId].send({ command: 'run', funcId: funcId, func: func.toString(), args: args });
+    if (init) {
+      for (let workerId = 0; workerId < this.workerCount; workerId++) {
+        this.workerPool[workerId].send({ command: 'run', funcId: funcId, func: func.toString(), args: args });
+      }
+    } else {
+      let workerId = Math.floor(Math.random() * this.workerCount);
+      this.workerPool[workerId].send({ command: 'run', funcId: funcId, func: func.toString(), args: args });
+    }
     return promise;
   }
 
   run = function(func, ...args) {
     return new Promise((resolve, reject) => {
       this.runFunc({ func: func, args: args }).then(
+        ({ result }) => resolve(result)
+      ).catch(
+        ({ reason }) => reject(reason)
+      );
+    });
+  }
+
+  init = function(func, ...args) {
+    return new Promise((resolve, reject) => {
+      this.runFunc({ func: func, args: args, init: true}).then(
         ({ result }) => resolve(result)
       ).catch(
         ({ reason }) => reject(reason)

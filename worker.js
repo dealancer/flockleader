@@ -1,6 +1,8 @@
 const util = require('./util.js');
 const promiseMap = new Map();
 
+const globals = {};
+
 process.on('message', ({ command, funcId, func, args, result, reason }) => {
   if (command == 'done') {
     promiseMap.get(funcId).resolve(result);

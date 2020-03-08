@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "description": "Parallel task runner for Node.js.",
   "main": "flockleader.js",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dealancer/flockleader.git"
@@ -14,5 +13,8 @@
   "bugs": {
     "url": "https://github.com/dealancer/flockleader/issues"
   },
-  "homepage": "https://github.com/dealancer/flockleader#readme"
+  "homepage": "https://github.com/dealancer/flockleader#readme",
+  "dependencies": {
+    "js-sha256": "^0.9.0"
+  }
 }
