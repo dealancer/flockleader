@@ -1,12 +1,14 @@
-const mergeSort = async function(arr) {
+const mergeSort = function(arr) {
   if (arr.length < 2) {
     return arr;
   }
-  
-  let [a, b] = await Promise.all([
-    mergeSort(arr.slice(0, Math.floor(arr.length / 2))),
-    mergeSort(arr.slice(Math.floor(arr.length / 2), arr.length))
-  ]);
+
+  let a = mergeSort(
+    arr.slice(0, Math.floor(arr.length / 2))
+  );
+  let b = mergeSort(
+    arr.slice(Math.floor(arr.length / 2), arr.length)
+  );
 
   let resArr = [];
   let i = 0, j = 0;
@@ -27,17 +29,14 @@ const mergeSort = async function(arr) {
       break;
     }
   }
-  
+
   return resArr;
 }
-  
+
 let arr = new Array();
 for (let i = 0; i < 50000; i++) {
   arr.push(Math.floor(Math.random() * 1000000000) - 500000000);
 }
 
-mergeSort(arr).then(
-  result => console.log(result)
-).catch(
-  reason => console.error(reason)
-)
+let result = mergeSort(arr);
+console.log(result);

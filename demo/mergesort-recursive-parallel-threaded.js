@@ -1,12 +1,12 @@
-const mergeSort = function(arr) {
+const FlockLeader = require('../flockleader.js');
+
+const mergeSort = async function(arr) {
   if (arr.length < 2) {
     return arr;
   }
-  
-  a = mergeSort(
-    arr.slice(0, Math.floor(arr.length / 2))
-  );
-  b = mergeSort(
+
+  let [a, b] = await runMultiple(
+    arr.slice(0, Math.floor(arr.length / 2)),
     arr.slice(Math.floor(arr.length / 2), arr.length)
   );
 
@@ -29,14 +29,20 @@ const mergeSort = function(arr) {
       break;
     }
   }
-  
+
   return resArr;
 }
-  
+
 let arr = new Array();
 for (let i = 0; i < 50000; i++) {
   arr.push(Math.floor(Math.random() * 1000000000) - 500000000);
 }
 
-mergeSort(arr);
-console.log(arr);
+const fl = new FlockLeader(3, 2);
+fl.run(mergeSort, arr).then(
+  result => console.log(result)
+).catch(
+  reason => console.error(reason)
+).finally(
+  () => fl.done()
+);
