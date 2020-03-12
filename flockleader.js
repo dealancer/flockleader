@@ -8,6 +8,7 @@ class FlockLeader {
 
     this.workerPool = new Array();
     this.promiseMap = new Map();
+    this.workerSelector = this.workerSelectorRoundRobinGenerator();
 
     let onMessage = ({ command, workerId, funcId, func, args, result, reason }) => {
       if (command == 'terminate') {
@@ -48,6 +49,14 @@ class FlockLeader {
     }).then();
   }
 
+  workerSelectorRoundRobinGenerator = function* () {
+    while (true) {
+      for (var i = 0; i < this.workerCount; i++) {
+        yield i;
+      }
+    }
+  }
+
   runFunc = function({ funcId, func, args, init }) {
     if (!funcId) {
       funcId = util.createId();
@@ -61,7 +70,7 @@ class FlockLeader {
         this.workerPool[workerId].send({ command: 'run', funcId: funcId, func: func.toString(), args: args });
       }
     } else {
-      let workerId = Math.floor(Math.random() * this.workerCount);
+      let workerId = this.workerSelector.next().value;
       this.workerPool[workerId].send({ command: 'run', funcId: funcId, func: func.toString(), args: args });
     }
     return promise;
