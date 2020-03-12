@@ -3,11 +3,11 @@ const FlockLeader = require('../flockleader.js');
 const init = async function() {
   const sha256 = require('js-sha256').sha256;
 
-  const password = "Sup";
+  const password = "9999";
   const passwordHashed = sha256(password);
 
-  globals.maxLen = 3;
-  globals.alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  globals.maxLen = 4;
+  globals.alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
   
   globals.testPassword = function(p) {
     return sha256(p) == passwordHashed;

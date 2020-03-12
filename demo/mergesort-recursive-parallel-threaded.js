@@ -38,7 +38,7 @@ for (let i = 0; i < 50000; i++) {
   arr.push(Math.floor(Math.random() * 1000000000) - 500000000);
 }
 
-const fl = new FlockLeader(3, 2);
+const fl = new FlockLeader(5, 2);
 fl.run(mergeSort, arr).then(
   result => console.log(result)
 ).catch(

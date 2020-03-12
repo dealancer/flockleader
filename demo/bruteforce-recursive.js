@@ -1,10 +1,10 @@
 const sha256 = require('js-sha256').sha256;
 
-const password = "Sup";
+const password = "9999";
 const passwordHashed = sha256(password);
 
-const maxLen = 3;
-const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+const maxLen = 4;
+const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
 
 const testPassword = function(p) {
   return sha256(p) == passwordHashed;
@@ -15,7 +15,7 @@ const bruteforce = async function(p) {
     return [true, p];
   }
 
-  if (p.length > maxLen) {
+  if (p.length >= maxLen) {
     return [false, null];
   }
 
@@ -30,7 +30,7 @@ const bruteforce = async function(p) {
 }
 
 bruteforce("").then(
-  result => console.log(result[0])
+  result => console.log(result[1])
 ).catch(
   reason => console.error(reason)
 )
